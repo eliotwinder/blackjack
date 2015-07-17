@@ -3,7 +3,10 @@ class window.Game extends Backbone.Model
     @set 'playerHand', @deck.dealPlayer()
     @set 'dealerHand', @deck.dealDealer()
 
-    @get('playerHand').on 'stand', => @compareHands()
+    @get('playerHand').on 'stand', => @dealerStart()
+    # @get('playerHand').on 'bust', => @playerLoses()
+    # @get('dealerHand').on 'stand', => @compareHands()
+    # @get('dealerHand').on 'bust', => @playerWins()
 
   compareHands: ->
     playerScores = @get('playerHand').scores()
@@ -17,3 +20,11 @@ class window.Game extends Backbone.Model
     #only one possibility
     else 
       console.log playerScores[0]
+  
+  dealerStart: ->
+    @get('dealerHand').revealHand()
+
+
+  dealerHitOrStay: ->
+    dealerPossibilities = @get('dealerHand').scores()
+    console.log dealerPossibilities 
