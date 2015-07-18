@@ -5,9 +5,11 @@ class window.Hand extends Backbone.Collection
 
   hit: ->
     @add(@deck.pop())
+    @checkBust()
 
   stand: ->
-    @trigger('stand', @)
+    @trigger 'stand', @
+
 
   hasAce: -> @reduce (memo, card) ->
     memo or card.get('value') is 1
@@ -25,6 +27,30 @@ class window.Hand extends Backbone.Collection
 
   revealHand: ->
     @at(0).set 'revealed', true
-    console.log @at(0) 
+
+  checkBust: ->
+    scores = @scores()
+    if scores[0] > 21 then @trigger 'bust', @
+
+  returnBestScore: ->
+    scores = @scores()
+    if scores[1] > 21 then return scores[0] else return scores[1]
+
+  returnShownScore: ->
+    score = 0
+    allRevealed = true
+    @forEach (card) ->
+      if card.get 'revealed'
+        score += card.get 'value'
+      else
+        allRevealed = false
+    
+    if allRevealed
+      return @returnBestScore()
+    else
+      return score
+
+
+
 
 

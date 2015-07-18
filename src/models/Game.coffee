@@ -4,27 +4,40 @@ class window.Game extends Backbone.Model
     @set 'dealerHand', @deck.dealDealer()
 
     @get('playerHand').on 'stand', => @dealerStart()
-    # @get('playerHand').on 'bust', => @playerLoses()
-    # @get('dealerHand').on 'stand', => @compareHands()
-    # @get('dealerHand').on 'bust', => @playerWins()
+    @get('playerHand').on 'bust', => @playerLoses()
+    @get('dealerHand').on 'stand', => @compareHands()
+    @get('dealerHand').on 'bust', => @playerWins()
 
   compareHands: ->
-    playerScores = @get('playerHand').scores()
-    dealerScore = @get('dealerHand').scores()
     
-    hasWon = true
+    playerScore = @get('playerHand').returnBestScore()
+    dealerScore = @get('dealerHand').returnBestScore()
     
-    # Two possibilities
-    if playerScores[0] != playerScores[1]
-      console.log(playerScores)
-    #only one possibility
-    else 
-      console.log playerScores[0]
-  
+    if playerScore > dealerScore then  @playerWins() else @playerLoses()
+
+
   dealerStart: ->
     @get('dealerHand').revealHand()
+    @dealerHitOrStay()
 
 
   dealerHitOrStay: ->
     dealerPossibilities = @get('dealerHand').scores()
-    console.log dealerPossibilities 
+    switch 
+        when dealerPossibilities[1] < 17 
+            @get('dealerHand').hit() 
+            @dealerHitOrStay()
+        when dealerPossibilities[1] > 17 and dealerPossibilities[1] <22
+          @get('dealerHand').stand()
+        else 
+          if dealerPossibilities[0] == 17
+            @get('dealerHand').stand()
+          else
+            @get('dealerHand').hit()
+            @dealerHitOrStay()
+
+  playerWins: ->
+    console.log 'YOU ARE WIN!'
+
+  playerLoses: ->
+    console.log 'you are a poor card player and a bad person'
