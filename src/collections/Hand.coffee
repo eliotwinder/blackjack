@@ -30,7 +30,8 @@ class window.Hand extends Backbone.Collection
 
   checkBust: ->
     scores = @scores()
-    if scores[0] > 21 then @trigger 'bust', @
+    if scores[0] > 21 
+      @trigger 'bust', @
 
   returnBestScore: ->
     scores = @scores()
