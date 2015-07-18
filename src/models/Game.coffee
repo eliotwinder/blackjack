@@ -6,14 +6,11 @@ class window.Game extends Backbone.Model
     @get('playerHand').on 'stand', => @dealerStart()
     @get('playerHand').on 'bust', => @playerLoses()
     @get('dealerHand').on 'stand', => @compareHands()
-    @get('dealerHand').on 'bust', => @playerWins()
 
   compareHands: ->
     
     playerScore = @get('playerHand').returnBestScore()
     dealerScore = @get('dealerHand').returnBestScore()
-
-    console.log(playerScore, dealerScore)
     
     if playerScore > dealerScore and playerScore <= 21
       @playerWins()
@@ -26,19 +23,15 @@ class window.Game extends Backbone.Model
     @get('dealerHand').revealHand()
     @dealerHitOrStay()
 
-
   dealerHitOrStay: ->
     dealerPossibilities = @get('dealerHand').scores()
-    
-    if dealerPossibilities[0] < 17 
-      @get('dealerHand').hit() 
-      @dealerHitOrStay()
-    else if dealerPossibilities[0] > 17
+    console.log dealerPossibilities
+    if 22 > dealerPossibilities[1] > 17 or dealerPossibilities[0] > 17
       @get('dealerHand').stand()
-    else if dealerPossibilities[1] == 17 and dealerPossibilities[0] < 17
-      @get('dealerHand').hit()
     else
-      @get('dealerHand').stand()
+      @get('dealerHand').hit() 
+      @dealerHitOrStay() 
+
 
   playerWins: ->
     console.log 'YOU ARE WIN!'
